@@ -4,6 +4,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -32,11 +34,11 @@ public class PersonService {
 		return personMapper.toDTO(person);
 	}
 	
-	public ResponseEntity<Person> insert(PersonDto personDto) {
+	public ResponseEntity<PersonDto> insert(PersonDto personDto) {
 		
 		Person personToSave = personMapper.toModel(personDto);
 		
-		Person savedPerson = personRepository.save(personToSave);
+		PersonDto savedPerson = personMapper.toDTO(personRepository.save(personToSave));
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(personDto.getId()).toUri();
 		return ResponseEntity.created(uri).body(savedPerson);
@@ -52,9 +54,15 @@ public class PersonService {
 		personRepository.deleteById(id);
 	}
 	
+	public PersonDto updateById(Long id, @Valid PersonDto personDto) throws PersonNotFoundException {
+		Person obj = verifyIfExists(id);
+		personDto.setId(obj.getId());
+		personRepository.save(personMapper.toModel(personDto));
+		return personDto;
+	}
+	
 	public Person verifyIfExists(Long id) throws PersonNotFoundException {
 		return personRepository.findById(id)
 		.orElseThrow(() -> new PersonNotFoundException("Person of ID: " + id + " was not found."));
 	}
-	
 }
