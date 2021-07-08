@@ -1,5 +1,7 @@
 package one.digitalinnovation.personapi.resources;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import one.digitalinnovation.personapi.dto.PersonDto;
 import one.digitalinnovation.personapi.entities.Person;
 import one.digitalinnovation.personapi.services.PersonService;
 
@@ -32,8 +35,8 @@ public class PersonResource {
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<Person> insert(@RequestBody Person person) {
-		return personService.insert(person);
+	public ResponseEntity<Person> insert(@RequestBody @Valid PersonDto personDto) {
+		return personService.insert(personDto);
 	}
 	
 }

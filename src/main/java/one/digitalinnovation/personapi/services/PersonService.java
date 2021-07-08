@@ -8,13 +8,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import one.digitalinnovation.personapi.dto.PersonDto;
 import one.digitalinnovation.personapi.entities.Person;
+import one.digitalinnovation.personapi.mappers.PersonMapper;
 import one.digitalinnovation.personapi.repositories.PersonRepository;
 
 @Service
 public class PersonService {
 
 	private PersonRepository personRepository;
+	
+	private final PersonMapper personMapper = PersonMapper.INSTANCE;
 	
 	@Autowired
 	public PersonService(PersonRepository personRepository) {
@@ -26,10 +30,13 @@ public class PersonService {
 		return ResponseEntity.ok().body(person.orElse(null));
 	}
 	
-	public ResponseEntity<Person> insert(Person person) {
-		Person savedPerson = personRepository.save(person);
+	public ResponseEntity<Person> insert(PersonDto personDto) {
+		
+		Person personToSave = personMapper.toModel(personDto);
+		
+		Person savedPerson = personRepository.save(personToSave);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(person.getId()).toUri();
+				.buildAndExpand(personDto.getId()).toUri();
 		return ResponseEntity.created(uri).body(savedPerson);
 	}
 }
