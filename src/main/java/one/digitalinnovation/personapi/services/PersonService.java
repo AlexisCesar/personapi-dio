@@ -1,7 +1,9 @@
 package one.digitalinnovation.personapi.services;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -38,5 +40,10 @@ public class PersonService {
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(personDto.getId()).toUri();
 		return ResponseEntity.created(uri).body(savedPerson);
+	}
+
+	public List<PersonDto> listAll() {
+		List<Person> people = personRepository.findAll();
+		return people.stream().map(personMapper::toDTO).collect(Collectors.toList());
 	}
 }

@@ -1,5 +1,7 @@
 package one.digitalinnovation.personapi.resources;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,11 @@ public class PersonResource {
 	@ResponseStatus(HttpStatus.CREATED)
 	public ResponseEntity<Person> insert(@RequestBody @Valid PersonDto personDto) {
 		return personService.insert(personDto);
+	}
+	
+	@GetMapping
+	public List<PersonDto> findAll() {
+		return personService.listAll();
 	}
 	
 }
