@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import one.digitalinnovation.personapi.dto.PersonDto;
 import one.digitalinnovation.personapi.entities.Person;
+import one.digitalinnovation.personapi.exceptions.PersonNotFoundException;
 import one.digitalinnovation.personapi.services.PersonService;
 
 @RestController
@@ -31,7 +32,7 @@ public class PersonResource {
 	}
 	
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<Person> findById(@PathVariable Long id) {
+	public PersonDto findById(@PathVariable Long id) throws PersonNotFoundException {
 		return personService.findById(id);
 	}
 	

@@ -12,6 +12,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import one.digitalinnovation.personapi.dto.PersonDto;
 import one.digitalinnovation.personapi.entities.Person;
+import one.digitalinnovation.personapi.exceptions.PersonNotFoundException;
 import one.digitalinnovation.personapi.mappers.PersonMapper;
 import one.digitalinnovation.personapi.repositories.PersonRepository;
 
@@ -27,9 +28,10 @@ public class PersonService {
 		this.personRepository = personRepository;
 	}
 	
-	public ResponseEntity<Person> findById(Long id) {
-		Optional<Person> person = personRepository.findById(id);
-		return ResponseEntity.ok().body(person.orElse(null));
+	public PersonDto findById(Long id) throws PersonNotFoundException {
+		Person person = personRepository.findById(id)
+				.orElseThrow(() -> new PersonNotFoundException("Person of ID: " + id + " was not found."));
+		return personMapper.toDTO(person);
 	}
 	
 	public ResponseEntity<Person> insert(PersonDto personDto) {
