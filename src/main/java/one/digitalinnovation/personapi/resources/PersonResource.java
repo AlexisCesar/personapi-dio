@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -39,7 +40,7 @@ public class PersonResource {
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<Person> insert(@RequestBody @Valid PersonDto personDto) {
+	public ResponseEntity<PersonDto> insert(@RequestBody @Valid PersonDto personDto) {
 		return personService.insert(personDto);
 	}
 	
@@ -53,5 +54,12 @@ public class PersonResource {
 	public void deleteById(@PathVariable Long id) throws PersonNotFoundException {
 		personService.delete(id);
 	}
+	
+	@PutMapping(value = "/{id}")
+	public ResponseEntity<PersonDto> updateById(@PathVariable Long id, @RequestBody @Valid PersonDto personDto) throws PersonNotFoundException {
+		PersonDto obj = personService.updateById(id, personDto);
+		return ResponseEntity.ok().body(obj);
+	}
+	
 	
 }
